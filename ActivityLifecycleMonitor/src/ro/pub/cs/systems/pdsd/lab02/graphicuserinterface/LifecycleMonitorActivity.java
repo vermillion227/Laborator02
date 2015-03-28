@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 
@@ -74,9 +75,49 @@ public class LifecycleMonitorActivity extends Activity {
         okButton.setOnClickListener(buttonClickListener);
         Button cancelButton = (Button)findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(buttonClickListener);
-        Log.d(Constants.TAG, "onCreate() method was invoked");
+        if (savedInstanceState == null) {
+        	Log.d(Constants.TAG, "onCreate() called for first time");
+        } else {
+        	Log.d(Constants.TAG, "onCreate() method was invoked again");
+        }
     }    
 
+    @Override
+    protected void onStart() {
+    	super.onStart();
+    	Log.d(Constants.TAG, "onStart() method was invoked");
+    }
+    
+    @Override
+    protected void onRestart() {
+    	super.onStart();
+    	Log.d(Constants.TAG, "onRestart() method was invoked");
+    }
+    
+    @Override
+    protected void onResume() {
+    	super.onStart();
+    	Log.d(Constants.TAG, "onResume() method was invoked");
+    }
+    
+    @Override
+    protected void onStop() {
+    	super.onStart();
+    	Log.d(Constants.TAG, "onStop() method was invoked");
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onStart();
+    	Log.d(Constants.TAG, "onPause() method was invoked");
+    }
+    
+    @Override
+    protected void onDestroy() {
+    	super.onStart();
+    	Log.d(Constants.TAG, "onDestroy() method was invoked");
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -84,6 +125,8 @@ public class LifecycleMonitorActivity extends Activity {
         return true;
     }
 
+    
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -94,5 +137,35 @@ public class LifecycleMonitorActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+      // apelarea metodei din activitatea parinte este recomandata, dar nu obligatorie
+      super.onSaveInstanceState(savedInstanceState);
+      CheckBox  chkBox = (CheckBox)findViewById(R.id.remember_me_checkbox);
+      Log.d(Constants.TAG, "save state");
+      if (chkBox.isChecked()) {
+    	  Log.d(Constants.TAG, "save state");
+	      EditText username = (EditText)findViewById(R.id.username_edit_text);
+	      savedInstanceState.putString(Constants.USERNAME_EDIT_TEXT, username.getText().toString());
+	      
+	      EditText pass = (EditText)findViewById(R.id.password_edit_text);
+	      savedInstanceState.putString(Constants.PASSWORD_EDIT_TEXT, pass.getText().toString());
+      }
+    }
+    
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+      super.onRestoreInstanceState(savedInstanceState);
+      EditText usernameEditText= (EditText)findViewById(R.id.username_edit_text);
+      if (savedInstanceState.getString(Constants.USERNAME_EDIT_TEXT) != null) {
+          usernameEditText.setText(savedInstanceState.getString(Constants.USERNAME_EDIT_TEXT));
+      }
+      
+      EditText pass = (EditText)findViewById(R.id.password_edit_text);
+      if (savedInstanceState.getString(Constants.PASSWORD_EDIT_TEXT) != null) {
+    	  pass.setText(savedInstanceState.getString(Constants.PASSWORD_EDIT_TEXT));
+      }
     }
 }
